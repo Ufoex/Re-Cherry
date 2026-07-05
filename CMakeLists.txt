@@ -17,6 +17,7 @@ set(RECHERRY_SOURCES
     src/main.cpp
     src/hooks.cpp
     src/costume_switcher.cpp
+    src/xbox_live_bypass.cpp
 )
 
 if(WIN32)

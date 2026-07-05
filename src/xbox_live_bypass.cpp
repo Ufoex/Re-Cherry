@@ -23,7 +23,7 @@ std::string ReadGuestUtf16Ascii(uint8_t* base, uint32_t guest_ptr) {
     out.reserve(128);
 
     for (size_t i = 0; i < 256; ++i) {
-        uint16_t ch = PPC_LOAD_U16(guest_ptr + static_cast<uint32_t>(i * 2));
+        uint16_t ch = REX_LOAD_U16(guest_ptr + static_cast<uint32_t>(i * 2));
         if (ch == 0) {
             break;
         }
@@ -63,13 +63,13 @@ extern "C" void sub_82BF4288(PPCContext& ctx, uint8_t* membase) {
     const uint32_t text_ptr = ctx.r5.u32;
 
     ctx.r12.u64 = ctx.lr;
-    PPC_STORE_U32(saved_sp - 8, ctx.r12.u32);
+    REX_STORE_U32(saved_sp - 8, ctx.r12.u32);
     ea = saved_sp - 96;
-    PPC_STORE_U32(ea, saved_sp);
+    REX_STORE_U32(ea, saved_sp);
     ctx.r1.u32 = ea;
 
-    const uint32_t overlapped_ptr = PPC_LOAD_U32(ctx.r1.u32 + 180);
-    PPC_STORE_U32(ctx.r1.u32 + 84, overlapped_ptr);
+    const uint32_t overlapped_ptr = REX_LOAD_U32(ctx.r1.u32 + 180);
+    REX_STORE_U32(ctx.r1.u32 + 84, overlapped_ptr);
 
     if (REXCVAR_GET(disable_xbox_live_prompt)) {
         const std::string title = ReadGuestUtf16Ascii(base, title_ptr);
@@ -86,7 +86,7 @@ extern "C" void sub_82BF4288(PPCContext& ctx, uint8_t* membase) {
             ctx.r8.u32 = old_active_button;
             REXCVAR_SET(headless, old_headless);
             ctx.r1.u32 = saved_sp;
-            ctx.r12.u64 = PPC_LOAD_U32(ctx.r1.u32 - 8);
+            ctx.r12.u64 = REX_LOAD_U32(ctx.r1.u32 - 8);
             ctx.lr = ctx.r12.u64;
             return;
         }
@@ -97,6 +97,6 @@ extern "C" void sub_82BF4288(PPCContext& ctx, uint8_t* membase) {
         __imp__XamShowMessageBoxUI(ctx, rt->virtual_membase());
     }
     ctx.r1.u32 = saved_sp;
-    ctx.r12.u64 = PPC_LOAD_U32(ctx.r1.u32 - 8);
+    ctx.r12.u64 = REX_LOAD_U32(ctx.r1.u32 - 8);
     ctx.lr = ctx.r12.u64;
 }
