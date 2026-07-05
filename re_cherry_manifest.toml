@@ -1,0 +1,14 @@
+[project]
+sdk_version = "0.8.1.4"
+name = "re_cherry"
+
+[entrypoint]
+file_path = "assets/default.xex"
+out_directory_path = "generated"
+includes = [
+  "re_cherry_config.toml",
+]
+
+setjmp_address  = 0x82BD89D0
+longjmp_address = 0x82BD8590
+
