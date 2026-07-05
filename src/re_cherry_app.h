@@ -7,6 +7,7 @@
 #pragma once
 
 #include <rex/rex_app.h>
+#include <rex/filesystem.h>
 #include "costume_switcher.h"
 #include "counter.h"
 
@@ -18,6 +19,14 @@ class ReCherryApp : public rex::ReXApp {
       rex::ui::WindowedAppContext& ctx) {
     return std::unique_ptr<ReCherryApp>(new ReCherryApp(ctx, "re_cherry",
         PPCImageConfig));
+  }
+
+  void OnConfigurePaths(rex::PathConfig& paths) override {
+    // Match the Windows build's behavior: fall back to the "assets" folder
+    // next to the executable when --game_data_root wasn't passed explicitly.
+    if (paths.game_data_root.empty()) {
+      paths.game_data_root = rex::filesystem::GetExecutableFolder() / "assets";
+    }
   }
 
   void OnCreateDialogs(rex::ui::ImGuiDrawer* drawer) override {
